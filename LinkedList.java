@@ -55,7 +55,11 @@ public class LinkedList {
 					"index must be between 0 and size");
 		}
 		//// Replace the following statement with your code
-		return null;
+		Node current = first;
+		for (int i = 0; i < index; i++) {
+			current = current.next;
+		}
+		return current;
 	}
 	
 	/**
@@ -79,6 +83,31 @@ public class LinkedList {
 	 */
 	public void add(int index, MemoryBlock block) {
 		//// Write your code here
+		if (index < 0 || index > size) {
+			throw new IllegalArgumentException(
+					"index must be between 0 and size");
+		}
+		if (size == 0) {
+			first = new Node(block);
+			last = first;
+		}
+		else if (size == index) {
+			this.addLast(block);
+		}
+		else if (index == 0) {
+			this.addFirst(block);
+		}
+		else {
+			Node indexOfBefore = first;
+			for (int i = 1; i < index; i++) {
+				indexOfBefore = indexOfBefore.next;
+			}
+			Node temp = indexOfBefore.next;
+			indexOfBefore.next = new Node(block);
+			indexOfBefore.next.next = temp;
+		}
+		size ++;
+		return;
 	}
 
 	/**
@@ -90,6 +119,14 @@ public class LinkedList {
 	 */
 	public void addLast(MemoryBlock block) {
 		//// Write your code here
+		if (size == 0) {
+			first = new Node(block);
+			last = first;
+		}
+		else {
+		last.next = new Node(block);
+		last = last.next;
+		}
 	}
 	
 	/**
@@ -101,6 +138,15 @@ public class LinkedList {
 	 */
 	public void addFirst(MemoryBlock block) {
 		//// Write your code here
+		if (size == 0) {
+			first = new Node(block);
+			last = first;
+		}
+		else {
+		Node temp = new Node(block);
+		temp.next = first;
+		first = temp;
+		}
 	}
 
 	/**
@@ -114,7 +160,8 @@ public class LinkedList {
 	 */
 	public MemoryBlock getBlock(int index) {
 		//// Replace the following statement with your code
-		return null;
+		
+		return this.getNode(index).block;
 	}	
 
 	/**
@@ -126,6 +173,13 @@ public class LinkedList {
 	 */
 	public int indexOf(MemoryBlock block) {
 		//// Replace the following statement with your code
+		Node current = first;
+		for (int i = 0; i < size; i++) {
+			if (current.block.equals(block)) {
+				return i;
+			}
+			current = current.next;
+		}
 		return -1;
 	}
 
@@ -137,6 +191,15 @@ public class LinkedList {
 	 */
 	public void remove(Node node) {
 		//// Write your code here
+		if (node == first) {
+			first = node.next;
+		}
+		else {
+			this.getNode(indexOf(node.block) - 1).next = node.next;
+		}
+		node.next = null;
+		size--;
+		return;
 	}
 
 	/**
@@ -148,6 +211,8 @@ public class LinkedList {
 	 */
 	public void remove(int index) {
 		//// Write your code here
+		this.remove(this.getNode(index));
+		return;
 	}
 
 	/**
@@ -159,6 +224,8 @@ public class LinkedList {
 	 */
 	public void remove(MemoryBlock block) {
 		//// Write your code here
+		this.remove(this.indexOf(block));
+		return;
 	}	
 
 	/**
