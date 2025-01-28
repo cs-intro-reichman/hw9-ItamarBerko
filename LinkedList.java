@@ -87,10 +87,7 @@ public class LinkedList {
 			throw new IllegalArgumentException(
 					"index must be between 0 and size");
 		}
-		if (size == 0) {
-			first = new Node(block);
-			last = first;
-		}
+
 		else if (size == index) {
 			this.addLast(block);
 		}
@@ -105,8 +102,9 @@ public class LinkedList {
 			Node temp = indexOfBefore.next;
 			indexOfBefore.next = new Node(block);
 			indexOfBefore.next.next = temp;
+			size ++;
 		}
-		size ++;
+		
 		return;
 	}
 
@@ -119,14 +117,18 @@ public class LinkedList {
 	 */
 	public void addLast(MemoryBlock block) {
 		//// Write your code here
-		if (size == 0) {
-			first = new Node(block);
-			last = first;
+		
+		Node temp = new Node(block);
+		if (last == null) {
+			first = temp;
+			last = temp;
 		}
 		else {
-		last.next = new Node(block);
-		last = last.next;
+		last.next = temp;
+		last = temp;
 		}
+
+		size++;
 	}
 	
 	/**
@@ -138,15 +140,16 @@ public class LinkedList {
 	 */
 	public void addFirst(MemoryBlock block) {
 		//// Write your code here
-		if (size == 0) {
-			first = new Node(block);
-			last = first;
-		}
-		else {
+		
 		Node temp = new Node(block);
 		temp.next = first;
 		first = temp;
+		
+		if (last == null) {
+			last = temp;
 		}
+
+		size++;
 	}
 
 	/**
@@ -160,7 +163,10 @@ public class LinkedList {
 	 */
 	public MemoryBlock getBlock(int index) {
 		//// Replace the following statement with your code
-		
+		if (this.getNode(index) == null) {
+			throw new IllegalArgumentException(
+					"index must be between 0 and size");
+		}
 		return this.getNode(index).block;
 	}	
 
@@ -191,15 +197,31 @@ public class LinkedList {
 	 */
 	public void remove(Node node) {
 		//// Write your code here
+		
+		
 		if (node == first) {
 			first = node.next;
+			if (first == null) { 
+				last = null;
+			}
 		}
 		else {
-			this.getNode(indexOf(node.block) - 1).next = node.next;
+			Node current = first;
+    		while (current.next != null && current.next != node) {
+			current = current.next;
+    		}
+
+			
+			if (current.next == node) {
+				current.next = node.next; 
+				if (node == last) { 
+					last = current;
+				}
+			}
 		}
-		node.next = null;
-		size--;
-		return;
+			node = null;
+			size--;
+			return;
 	}
 
 	/**
