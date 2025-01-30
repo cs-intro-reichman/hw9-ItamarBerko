@@ -59,20 +59,23 @@ public class MemorySpace {
 	 */
 	public int malloc(int length) {		
 		//// Replace the following statement with your code
-		for (int i = 0; i < freeList.getSize(); i++) {
-			Node currentNode = freeList.getNode(i);
-			if (currentNode.block.length >= length) {
-				MemoryBlock toAdd = new MemoryBlock(currentNode.block.baseAddress, length);
+		Node currentNode = freeList.getFirst();
+		while (currentNode != null) {
+			
+			if (currentNode.block.getLength() >= length) {
+				MemoryBlock toAdd = new MemoryBlock(currentNode.block.getBaseAddress(), length);
 				allocatedList.addLast(toAdd);
-				if (currentNode.block.length == length) {
+				if (currentNode.block.getLength() == length) {
 					freeList.remove(currentNode);
 				}
 				else {
-				currentNode.block.baseAddress += length;
-				currentNode.block.length -= length;
+				currentNode.block.setBaseAddress(currentNode.block.getBaseAddress() + length);
+				currentNode.block.setLength(currentNode.block.getLength() - length);
 				}
-				return allocatedList.getSize();
+				return toAdd.getBaseAddress();
 			}
+			
+			currentNode = currentNode.next;
 		}
 		return -1;
 	}
@@ -87,13 +90,16 @@ public class MemorySpace {
 	 */
 	public void free(int address) {
 		//// Write your code here
-		for (int i = 0; i < allocatedList.getSize(); i++) {
-			Node currentNode = allocatedList.getNode(i);
-			if (currentNode.block.baseAddress == address) {
+		Node currentNode = allocatedList.getFirst();
+		while (currentNode != null) {
+			
+			if (currentNode.block.getBaseAddress() == address) {
 				allocatedList.remove(currentNode);
 				freeList.addLast(currentNode.block);
 				return;
 			}
+
+			currentNode = currentNode.next;
 		}
 	}
 	
